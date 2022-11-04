@@ -5,13 +5,12 @@ module.exports = {
         .setName('skip')
         .setDescription('Skips the current song'),
     async execute({ interaction, client }) {
-        console.log(interaction.member.nickname)
+        // console.log(interaction.member.nickname)
         if (!interaction.member.voice.channelId) return await interaction.reply('Join voice channel broo...!!!😑')
 
         try {
             const queue = await client.player.getQueue(interaction.guildId)
-
-            console.log(queue.tracks)
+            // console.log(queue.tracks)
 
             if (queue.tracks.length === 0) {
                 const noSongsEmbed = new EmbedBuilder()
@@ -44,7 +43,7 @@ module.exports = {
             const noSongsEmbed = new EmbedBuilder()
                 .setTitle('No songs present..👎')
                 .setDescription('Queue is empty or there is no next song')
-                .setColor('red')
+                .setColor([153, 0, 0])
             if (queue.length === 1) {
                 await queue.skip()
             }

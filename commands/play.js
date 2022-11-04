@@ -22,16 +22,12 @@ module.exports = {
                 await queue.connect(interaction.member.voice.channel)
             }
 
-            console.log(QueryType)
-
             let searchTerm = await interaction.options.getString("search-terms")
 
             const result = await client.player.search(searchTerm, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.YOUTUBE_SEARCH
             })
-
-            console.log(result)
 
             if (result.tracks.length === 0) {
                 const noResultsEmbed = new EmbedBuilder()
@@ -69,10 +65,8 @@ module.exports = {
                     content: '',
                     embeds: [queueEmbed]
                 })
-
                 return;
             }
-
 
             const embed = new EmbedBuilder()
                 .setTitle(`🎶 ${song.title}`)

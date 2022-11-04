@@ -23,7 +23,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle(`Why you bully me?? 🥺`)
                 .setDescription('Bye bye...')
-                .setColor('red')
+                .setColor([153, 0, 0])
 
             await interaction.reply({
                 embeds: [embed]
