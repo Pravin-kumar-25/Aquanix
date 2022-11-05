@@ -70,17 +70,48 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle(`🎶 ${song.title}`)
-                .setAuthor({name: song.author})
+                .setAuthor({ name: song.author })
                 .setFooter({ text: `Duration: ${song.duration}` })
                 .setThumbnail(song.thumbnail)
                 .setColor([0, 179, 60])
 
-            await interaction.editReply({
+            const message = await interaction.editReply({
                 content: '',
                 embeds: [embed],
-            });
+            })
 
-            return;
+            await message.react('◀️')
+            await message.react('◼️')
+            await message.react('▶️')
+
+            console.log(interaction.user.id)
+
+            const filter = (reaction, user) => {
+                console.log(user.id)
+                return ['▶️', '◀️', '◼️'].includes(reaction.emoji.name) && user.id === interaction.user.id;
+            };
+
+            console.log('after reaction')
+
+            message.awaitReactions({ filter, max: 1, time: 15000, errors: ['time'] })
+                .then(async (collected) => {
+                    const reaction = collected.first()
+
+                    if (reaction._emoji.name === '◼️') {
+                        console.log('hellow')
+                        if (!queue.playing) {
+                            await queue.setPaused(false)
+                        } else {
+
+                            await queue.setPaused(true)
+                        }
+                        
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            // return;
 
         } catch (error) {
             console.log(error)

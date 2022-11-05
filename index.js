@@ -4,7 +4,7 @@ const { Player } = require("discord-player")
 const fs = require('node:fs')
 const path = require('node:path')
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] })
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessageReactions] })
 
 const commands = []
 client.commands = new Collection()
@@ -30,6 +30,7 @@ client.player = new Player(client, {
 client.on(Events.InteractionCreate, async (interaction) => {
     console.log('hola')
     if (!interaction.isChatInputCommand()) return;
+    console.log('amigo');
 
     const command = interaction.client.commands.get(interaction.commandName)
 
