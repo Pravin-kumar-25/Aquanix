@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { Client, GatewayIntentBits, Collection, Events, REST,Routes } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Events, REST, Routes } = require('discord.js');
 const { Player } = require("discord-player")
 const fs = require('node:fs')
 const path = require('node:path')
@@ -50,8 +50,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
 // 	console.log('Ready!');
 // });
 
-client.on('ready', () => {
+client.once('ready', (interaction) => {
+    // console.log(interaction)
+
     console.log('Listening to your commands..')
+    const guild_ids = client.guilds.cache.map(guild => guild.id);
     // console.log(commands)
 
     const rest = new REST({ version: '10' }).setToken(process.env.CLIENT_TOKEN);
@@ -60,12 +63,16 @@ client.on('ready', () => {
         try {
             console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-            const data = await rest.put(
-                Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
-                { body: commands },
-            );
+            for (const guildId of guild_ids) {
 
-            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+                const data = await rest.put(
+                    Routes.applicationGuildCommands(process.env.CLIENT_ID,guildId),
+                    { body: commands },
+                );
+            }
+
+
+            console.log(`Successfully reloaded application (/) commands.`);
         } catch (error) {
             console.error(error);
         }

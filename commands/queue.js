@@ -20,7 +20,7 @@ module.exports = {
             const currentSong = queue.current
 
             const queues = queue.tracks.slice(0,10).map((track,i) => {
-                return `${i+1}. ${track.duration} - ${track.title.split(" ").slice(0,5).join(' ')} - <@${track.requestedBy.id}> `
+                return `${i+1}. ${track.title.split(" ").slice(0,5).join(' ')} - ${track.duration}  - <@${track.requestedBy.id}> `
             }).join('\n')
 
             const embed = new EmbedBuilder()

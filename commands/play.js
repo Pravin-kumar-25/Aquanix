@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageEmbed, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { QueryType } = require('discord-player')
 
 module.exports = {
@@ -70,7 +70,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle(`🎶 ${song.title}`)
-                .setDescription(`Author: ${song.author}`)
+                .setAuthor({name: song.author})
                 .setFooter({ text: `Duration: ${song.duration}` })
                 .setThumbnail(song.thumbnail)
                 .setColor([0, 179, 60])
@@ -79,11 +79,12 @@ module.exports = {
                 content: '',
                 embeds: [embed],
             });
+
             return;
 
         } catch (error) {
             console.log(error)
-            await interaction.editReply('Please try again...:(')
+            await interaction.editReply('Please try again...🤥🤥🤥')
             return;
         }
     }
