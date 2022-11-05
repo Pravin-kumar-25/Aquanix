@@ -1,6 +1,7 @@
 require('dotenv').config()
 const { Client, GatewayIntentBits, Collection, Events, REST, Routes } = require('discord.js');
 const { Player } = require("discord-player")
+const { registerPlayerEvents } = require('./playerEvents');
 const fs = require('node:fs')
 const path = require('node:path')
 
@@ -26,6 +27,7 @@ client.player = new Player(client, {
         highWaterMark: 1 << 25
     }
 })
+// registerPlayerEvents(client.player)
 
 client.on(Events.InteractionCreate, async (interaction) => {
     console.log('hola')
