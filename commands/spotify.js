@@ -31,7 +31,7 @@ module.exports = {
             requestedBy: interaction.user,
             searchEngine: QueryType.SPOTIFY_PLAYLIST
         })
-        // console.log(QueryType)
+        console.log(result)
 
         if (result.tracks.length === 0) {
             const noResultsEmbed = new EmbedBuilder()

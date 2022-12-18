@@ -12,17 +12,22 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute({ interaction, client }) {
-
+        // console.log(interaction)
         try {
             if (!interaction.member.voice.channelId) return await interaction.reply('Are you dumb ???')
-            await interaction.reply('Searching.....')
-            const queue = await client.player.createQueue(interaction.guild)
+            let searchTerm = await interaction.options.getString("search-terms")
+            const message = await interaction.reply(`Searching for ${searchTerm}.....`)
+            const queue = await client.player.createQueue(interaction.guild, {
+                metadata: {
+                    channel: interaction.channel,
+                    interaction: interaction
+                }
+            })
 
             if (!queue.connection) {
                 await queue.connect(interaction.member.voice.channel)
             }
 
-            let searchTerm = await interaction.options.getString("search-terms")
 
             const result = await client.player.search(searchTerm, {
                 requestedBy: interaction.user,
@@ -67,18 +72,25 @@ module.exports = {
                 })
                 return;
             }
+            await interaction.deleteReply()
 
-            const embed = new EmbedBuilder()
-                .setTitle(`🎶 ${song.title}`)
-                .setAuthor({name: song.author})
-                .setFooter({ text: `Duration: ${song.duration}` })
-                .setThumbnail(song.thumbnail)
-                .setColor([0, 179, 60])
+            // await message.delete()
 
-            await interaction.editReply({
-                content: '',
-                embeds: [embed],
-            });
+            // const embed = new EmbedBuilder()
+            //     .setTitle(`🎶 ${song.title}`)
+            //     .setAuthor({name: song.author})
+            //     .setFooter({ text: `Duration: ${song.duration}` })
+            //     .setThumbnail(song.thumbnail)
+            //     .setColor([0, 179, 60])
+
+            // const message = await interaction.editReply({
+            //     content: '',
+            //     embeds: [embed],
+            // });
+
+            // await message.react('◀️')
+            // await message.react('◼️')
+            // await message.react('▶️')
 
             return;
 

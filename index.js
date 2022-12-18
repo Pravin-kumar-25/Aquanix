@@ -1,11 +1,15 @@
 require('dotenv').config()
-const { Client, GatewayIntentBits, Collection, Events, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Events, REST, Routes, Partials } = require('discord.js');
 const { Player } = require("discord-player")
 const { registerPlayerEvents } = require('./playerEvents');
+const reactionFunction = require('./emojiCommands/playPause')
 const fs = require('node:fs')
 const path = require('node:path')
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] })
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessageReactions],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction]
+})
 
 const commands = []
 client.commands = new Collection()
@@ -27,10 +31,9 @@ client.player = new Player(client, {
         highWaterMark: 1 << 25
     }
 })
-// registerPlayerEvents(client.player)
+registerPlayerEvents(client.player)
 
 client.on(Events.InteractionCreate, async (interaction) => {
-    console.log('hola')
     if (!interaction.isChatInputCommand()) return;
 
     const command = interaction.client.commands.get(interaction.commandName)
@@ -40,7 +43,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
     try {
         await command.execute({ interaction, client })
     } catch (error) {
-        await interaction.reply("wasted di maplai.....")
+        await interaction.edit("wasted di maplai.....")
+    }
+})
+
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+
+    const message = reaction.message
+
+    if (message?.author?.bot === true && message?.author?.username === process.env.BOT_NAME) {
+        if (['◼️','◀️','▶️'].includes(reaction.emoji.name) && reaction.count > 1) {
+            const execute = reactionFunction[reaction.emoji.name]
+            const interaction = reaction.message.interaction
+            console.log(reaction.message)
+            execute({ interaction, client, reaction, user })
+        }
     }
 })
 
@@ -68,7 +85,7 @@ client.once('ready', (interaction) => {
             for (const guildId of guild_ids) {
 
                 const data = await rest.put(
-                    Routes.applicationGuildCommands(process.env.CLIENT_ID,guildId),
+                    Routes.applicationGuildCommands(process.env.CLIENT_ID, guildId),
                     { body: commands },
                 );
             }
