@@ -38,7 +38,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
     try {
         await command.execute({ interaction, client })
     } catch (error) {
-        await interaction.reply("wasted di maplai.....")
+        try {
+            await interaction.reply("Wasted.....!")
+        } catch (error) {
+            await interaction.editReply("wasted di maplai.....")
+        }
     }
 })
 
